@@ -25,16 +25,15 @@
 
 #import "PlayFileViewController.h"
 
+double const SAMPLE_RATE = 44100;
+
+@interface PlayFileViewController ()
+@property (nonatomic) double frequency;
+@property (nonatomic) double sampleRate;
+@property (nonatomic) double theta;
+@end
+
 @implementation PlayFileViewController
-
-//------------------------------------------------------------------------------
-#pragma mark - Dealloc
-//------------------------------------------------------------------------------
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 //------------------------------------------------------------------------------
 #pragma mark - Customize the Audio Plot
@@ -59,7 +58,11 @@
     //
     // Create EZOutput to play audio data
     //
-    self.output = [EZOutput outputWithDataSource:self];
+    AudioStreamBasicDescription inputFormat = [EZAudioUtilities monoFloatFormatWithSampleRate:SAMPLE_RATE];
+    self.output = [EZOutput outputWithDataSource:self inputFormat:inputFormat];
+    [self.output setDelegate:self];
+    self.frequency = 200.0;
+    self.sampleRate = inputFormat.mSampleRate;
     
     //
     // Reload the menu for the output device selector popup button
@@ -69,6 +72,7 @@
     //
     // Configure UI components
     //
+    self.frequencySlider.floatValue = self.frequency;
     self.volumeSlider.floatValue = [self.output volume];
     self.volumeLabel.floatValue = [self.output volume];
     self.rollingHistoryLengthSlider.intValue = [self.audioPlot rollingHistoryLength];
@@ -78,6 +82,12 @@
 //------------------------------------------------------------------------------
 #pragma mark - Actions
 //------------------------------------------------------------------------------
+
+- (void)changeFrequency:(id)sender
+{
+    float value = [(NSSlider *)sender floatValue];
+    self.frequency = value;
+}
 
 - (void)changedOutput:(NSMenuItem *)item
 {
@@ -143,31 +153,19 @@
 #pragma mark - Action Extensions
 //------------------------------------------------------------------------------
 
-/*
- Give the visualization of the current buffer (this is almost exactly the openFrameworks audio input example)
- */
 -(void)drawBufferPlot
 {
-    // Change the plot type to the buffer plot
     self.audioPlot.plotType = EZPlotTypeBuffer;
-    // Don't fill
     self.audioPlot.shouldFill = NO;
-    // Don't mirror over the x-axis
     self.audioPlot.shouldMirror = NO;
 }
 
 //------------------------------------------------------------------------------
 
-/*
- Give the classic mirrored, rolling waveform look
- */
 -(void)drawRollingPlot
 {
-    // Change the plot type to the rolling plot
     self.audioPlot.plotType = EZPlotTypeRolling;
-    // Fill the waveform
     self.audioPlot.shouldFill = YES;
-    // Mirror over the x-axis
     self.audioPlot.shouldMirror = YES;
 }
 
@@ -208,50 +206,46 @@
 }
 
 //------------------------------------------------------------------------------
-#pragma mark - EZAudioPlayerDelegate
+#pragma mark - EZOutputDataSource
 //------------------------------------------------------------------------------
 
-- (void)  audioPlayer:(EZAudioPlayer *)audioPlayer
+- (OSStatus)        output:(EZOutput *)output
+ shouldFillAudioBufferList:(AudioBufferList *)audioBufferList
+        withNumberOfFrames:(UInt32)frames
+                 timestamp:(const AudioTimeStamp *)timestamp
+{
+    double theta = self.theta;
+    double frequency = self.frequency;
+    double theta_increment = 2.0 * M_PI * frequency / SAMPLE_RATE;
+    const int channel = 0;
+    Float32 *buffer = (Float32 *)audioBufferList->mBuffers[channel].mData;
+    for (UInt32 frame = 0; frame < frames; frame++)
+    {
+        buffer[frame] = sin(theta);
+        theta += theta_increment;
+        if (theta > 2.0 * M_PI)
+        {
+            theta -= 2.0 * M_PI;
+        }
+    }
+    self.theta = theta;
+    return noErr;
+}
+
+//------------------------------------------------------------------------------
+#pragma mark - EZOutputDelegate
+//------------------------------------------------------------------------------
+
+- (void)       output:(EZOutput *)output
           playedAudio:(float **)buffer
        withBufferSize:(UInt32)bufferSize
  withNumberOfChannels:(UInt32)numberOfChannels
-          inAudioFile:(EZAudioFile *)audioFile
 {
     __weak typeof (self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         [weakSelf.audioPlot updateBuffer:buffer[0]
                           withBufferSize:bufferSize];
     });
-}
-
-//------------------------------------------------------------------------------
-
-- (void)audioPlayer:(EZAudioPlayer *)audioPlayer
-    updatedPosition:(SInt64)framePosition
-        inAudioFile:(EZAudioFile *)audioFile
-{
-    __weak typeof (self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (!weakSelf.positionSlider.highlighted)
-        {
-            weakSelf.positionSlider.floatValue = (float)framePosition;
-            weakSelf.positionLabel.integerValue = framePosition;
-        }
-    });
-}
-
-//------------------------------------------------------------------------------
-#pragma mark - NSOpenSavePanelDelegate
-//------------------------------------------------------------------------------
-/**
- Here's an example how to filter the open panel to only show the supported file types by the EZAudioFile (which are just the audio file types supported by Core Audio).
- */
-- (BOOL)panel:(id)sender shouldShowFilename:(NSString *)filename
-{
-    NSString *ext = [filename pathExtension];
-    NSArray *fileTypes = [EZAudioFile supportedAudioFileTypes];
-    BOOL isDirectory = [ext isEqualToString:@""];
-    return [fileTypes containsObject:ext] || isDirectory;
 }
 
 //------------------------------------------------------------------------------

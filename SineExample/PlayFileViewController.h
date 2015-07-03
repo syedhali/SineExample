@@ -51,6 +51,9 @@
  */
 @property (nonatomic, weak) IBOutlet EZAudioPlotGL *audioPlot;
 
+
+@property (nonatomic, weak) IBOutlet NSSlider *frequencySlider;
+
 /**
  A label to display the audio file's current position.
  */
@@ -87,6 +90,11 @@
 @property (nonatomic, weak) IBOutlet NSPopUpButton *outputDevicePopUpButton;
 
 #pragma mark - Actions
+/**
+ Changes the length of the rolling history of the audio plot.
+ */
+- (IBAction)changeFrequency:(id)sender;
+
 /**
  Switches the plot drawing type between a buffer plot (visualizes the current stream of audio data from the update function) or a rolling plot (visualizes the audio data over time, this is the classic waveform look)
  */

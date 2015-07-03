@@ -8,9 +8,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="PlayFileViewController">
             <connections>
                 <outlet property="audioPlot" destination="Lz1-Gs-1lD" id="V5w-yH-ZVR"/>
+                <outlet property="frequencySlider" destination="CFP-v0-TzQ" id="6wh-fu-xrl"/>
                 <outlet property="outputDevicePopUpButton" destination="0LV-Bi-dGz" id="QTQ-qq-Ro8"/>
-                <outlet property="playButton" destination="OQp-Lr-dlS" id="K5R-Qg-7DY"/>
-                <outlet property="plotSegmentControl" destination="bZW-tA-C61" id="4ic-Ou-qh2"/>
                 <outlet property="positionLabel" destination="KYm-Io-VNv" id="Fhs-Ya-szS"/>
                 <outlet property="positionSlider" destination="CFP-v0-TzQ" id="EGD-qT-48R"/>
                 <outlet property="rollingHistoryLengthLabel" destination="vKe-ey-hXI" id="UiN-5S-TOn"/>
@@ -57,9 +56,9 @@
                 </segmentedControl>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CFP-v0-TzQ">
                     <rect key="frame" x="117" y="275" width="269" height="20"/>
-                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="9.3380614657210401" tickMarkPosition="above" sliderType="linear" id="gPc-pN-dmP"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" minValue="20" maxValue="2000" doubleValue="200" tickMarkPosition="above" sliderType="linear" id="gPc-pN-dmP"/>
                     <connections>
-                        <action selector="seekToFrame:" target="-2" id="iVY-so-6X2"/>
+                        <action selector="changeFrequency:" target="-2" id="LUE-Nh-hF6"/>
                     </connections>
                 </slider>
                 <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vj5-qT-JkR">
@@ -78,8 +77,8 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Fw5-pm-4w0">
-                    <rect key="frame" x="16" y="277" width="58" height="16"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Position:" id="9hW-4Z-OEW">
+                    <rect key="frame" x="16" y="277" width="72" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Frequency:" id="9hW-4Z-OEW">
                         <font key="font" metaFont="systemBold" size="12"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
