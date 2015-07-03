@@ -69,7 +69,7 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
     [self.output setDelegate:self];
     self.frequency = 200.0;
     self.sampleRate = inputFormat.mSampleRate;
-    self.amplitude = 0.91;
+    self.amplitude = 0.80;
     
     //
     // Reload the menu for the output device selector popup button
