@@ -30,13 +30,18 @@ double const SAMPLE_RATE = 44100.0;
 typedef NS_ENUM(NSUInteger, GeneratorType)
 {
     GeneratorTypeSine,
+    GeneratorTypeSquare,
+    GeneratorTypeTriangle,
+    GeneratorTypeSawtooth,
     GeneratorTypeNoise,
 };
 
 @interface GeneratorViewController ()
 @property (assign) GeneratorType type;
+@property (nonatomic) double amplitude;
 @property (nonatomic) double frequency;
 @property (nonatomic) double sampleRate;
+@property (nonatomic) double step;
 @property (nonatomic) double theta;
 @end
 
@@ -51,10 +56,10 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
     //
     // Customizing the audio plot's look
     //
-    self.audioPlot.backgroundColor = [NSColor colorWithCalibratedRed: 0.975 green: 0.533 blue: 0.536 alpha: 1];[NSColor colorWithCalibratedRed: 0.984 green: 0.275 blue: 0.408 alpha: 1];
-    self.audioPlot.color = [NSColor colorWithCalibratedRed: 0.984 green: 0.275 blue: 0.408 alpha: 1];
+    self.audioPlot.backgroundColor = [NSColor colorWithCalibratedRed: 0.557 green: 0.651 blue: 0.898 alpha: 1];
+    self.audioPlot.color = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     self.audioPlot.plotType = EZPlotTypeBuffer;
-    self.audioPlot.shouldFill = YES;
+    self.audioPlot.shouldFill = NO;
     
     //
     // Create EZOutput to play audio data
@@ -64,6 +69,7 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
     [self.output setDelegate:self];
     self.frequency = 200.0;
     self.sampleRate = inputFormat.mSampleRate;
+    self.amplitude = 0.91;
     
     //
     // Reload the menu for the output device selector popup button
@@ -160,7 +166,6 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
 -(void)drawBufferPlot
 {
     self.audioPlot.plotType = EZPlotTypeBuffer;
-    self.audioPlot.shouldFill = NO;
     self.audioPlot.shouldMirror = NO;
 }
 
@@ -169,7 +174,6 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
 -(void)drawRollingPlot
 {
     self.audioPlot.plotType = EZPlotTypeRolling;
-    self.audioPlot.shouldFill = YES;
     self.audioPlot.shouldMirror = YES;
 }
 
@@ -218,17 +222,17 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
         withNumberOfFrames:(UInt32)frames
                  timestamp:(const AudioTimeStamp *)timestamp
 {
+    Float32 *buffer = (Float32 *)audioBufferList->mBuffers[0].mData;
+    size_t bufferByteSize = (size_t)audioBufferList->mBuffers[0].mDataByteSize;
+    double theta = self.theta;
+    double frequency = self.frequency;
+    double thetaIncrement = 2.0 * M_PI * frequency / SAMPLE_RATE;
     if (self.type == GeneratorTypeSine)
     {
-        double theta = self.theta;
-        double frequency = self.frequency;
-        double theta_increment = 2.0 * M_PI * frequency / SAMPLE_RATE;
-        const int channel = 0;
-        Float32 *buffer = (Float32 *)audioBufferList->mBuffers[channel].mData;
         for (UInt32 frame = 0; frame < frames; frame++)
         {
-            buffer[frame] = sin(theta);
-            theta += theta_increment;
+            buffer[frame] = self.amplitude * sin(theta);
+            theta += thetaIncrement;
             if (theta > 2.0 * M_PI)
             {
                 theta -= 2.0 * M_PI;
@@ -238,11 +242,65 @@ typedef NS_ENUM(NSUInteger, GeneratorType)
     }
     else if (self.type == GeneratorTypeNoise)
     {
-        Float32 *buffer = (Float32 *)audioBufferList->mBuffers[0].mData;
         for (UInt32 frame = 0; frame < frames; frame++)
         {
-            buffer[frame] = ((float)rand()/RAND_MAX) * 2.0f - 1.0f;
+            buffer[frame] = self.amplitude * ((float)rand()/RAND_MAX) * 2.0f - 1.0f;
         }
+    }
+    else if (self.type == GeneratorTypeSquare)
+    {
+        for (UInt32 frame = 0; frame < frames; frame++)
+        {
+            buffer[frame] = self.amplitude * [EZAudioUtilities SGN:theta];
+            theta += thetaIncrement;
+            if (theta > 2.0 * M_PI)
+            {
+                theta -= 4.0 * M_PI;
+            }
+        }
+        self.theta = theta;
+    }
+    else if (self.type == GeneratorTypeTriangle)
+    {
+        double samplesPerWavelength = SAMPLE_RATE / self.frequency;
+        double ampStep = 2.0 / samplesPerWavelength;
+        double step = self.step;
+        for (UInt32 frame = 0; frame < frames; frame++)
+        {
+            if (step > 1.0)
+            {
+                step = 1.0;
+                ampStep = -ampStep;
+            }
+            else if (step < -1.0)
+            {
+                step = -1.0;
+                ampStep = -ampStep;
+            }
+            step += ampStep;
+            buffer[frame] = self.amplitude * step;
+        }
+        self.step = step;
+    }
+    else if (self.type == GeneratorTypeSawtooth)
+    {
+        double samplesPerWavelength = SAMPLE_RATE / self.frequency;
+        double ampStep = 1.0 / samplesPerWavelength;
+        double step = self.step;
+        for (UInt32 frame = 0; frame < frames; frame++)
+        {
+            if (step > 1.0)
+            {
+                step = -1.0;
+            }
+            step += ampStep;
+            buffer[frame] = self.amplitude * step;
+        }
+        self.step = step;
+    }
+    else
+    {
+        memset(buffer, 0, bufferByteSize);
     }
     return noErr;
 }
