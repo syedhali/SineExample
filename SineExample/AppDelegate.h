@@ -8,9 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "PlayFileViewController.h"
+#import "GeneratorViewController.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-@property (strong) PlayFileViewController *controller;
+@property (strong) GeneratorViewController *controller;
 @end
 

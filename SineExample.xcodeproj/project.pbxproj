@@ -12,8 +12,8 @@
 		663378151B4611E400A6BD57 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 663378141B4611E400A6BD57 /* Images.xcassets */; };
 		663378181B4611E400A6BD57 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 663378161B4611E400A6BD57 /* MainMenu.xib */; };
 		663378241B4611E400A6BD57 /* SineExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 663378231B4611E400A6BD57 /* SineExampleTests.m */; };
-		663378351B46142400A6BD57 /* PlayFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 663378331B46142400A6BD57 /* PlayFileViewController.m */; };
-		663378361B46142400A6BD57 /* PlayFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 663378341B46142400A6BD57 /* PlayFileViewController.xib */; };
+		663378351B46142400A6BD57 /* GeneratorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 663378331B46142400A6BD57 /* GeneratorViewController.m */; };
+		663378361B46142400A6BD57 /* GeneratorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 663378341B46142400A6BD57 /* GeneratorViewController.xib */; };
 		FAC3D84923EFA666232EE4F5 /* libPods-SineExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 169FB337D969DA5CFD1862DA /* libPods-SineExample.a */; };
 /* End PBXBuildFile section */
 
@@ -39,9 +39,9 @@
 		6633781D1B4611E400A6BD57 /* SineExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SineExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		663378221B4611E400A6BD57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		663378231B4611E400A6BD57 /* SineExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SineExampleTests.m; sourceTree = "<group>"; };
-		663378321B46142400A6BD57 /* PlayFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayFileViewController.h; sourceTree = "<group>"; };
-		663378331B46142400A6BD57 /* PlayFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayFileViewController.m; sourceTree = "<group>"; };
-		663378341B46142400A6BD57 /* PlayFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayFileViewController.xib; sourceTree = "<group>"; };
+		663378321B46142400A6BD57 /* GeneratorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorViewController.h; sourceTree = "<group>"; };
+		663378331B46142400A6BD57 /* GeneratorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratorViewController.m; sourceTree = "<group>"; };
+		663378341B46142400A6BD57 /* GeneratorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GeneratorViewController.xib; sourceTree = "<group>"; };
 		7EAF88E02DBDD87863DCA4F7 /* Pods-SineExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SineExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SineExample/Pods-SineExample.debug.xcconfig"; sourceTree = "<group>"; };
 		C0A0D9FAF81F4A9A0F1FA435 /* Pods-SineExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SineExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-SineExample/Pods-SineExample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -99,9 +99,9 @@
 			children = (
 				6633780F1B4611E400A6BD57 /* AppDelegate.h */,
 				663378101B4611E400A6BD57 /* AppDelegate.m */,
-				663378321B46142400A6BD57 /* PlayFileViewController.h */,
-				663378331B46142400A6BD57 /* PlayFileViewController.m */,
-				663378341B46142400A6BD57 /* PlayFileViewController.xib */,
+				663378321B46142400A6BD57 /* GeneratorViewController.h */,
+				663378331B46142400A6BD57 /* GeneratorViewController.m */,
+				663378341B46142400A6BD57 /* GeneratorViewController.xib */,
 				663378141B4611E400A6BD57 /* Images.xcassets */,
 				663378161B4611E400A6BD57 /* MainMenu.xib */,
 				6633780D1B4611E400A6BD57 /* Supporting Files */,
@@ -227,7 +227,7 @@
 			files = (
 				663378151B4611E400A6BD57 /* Images.xcassets in Resources */,
 				663378181B4611E400A6BD57 /* MainMenu.xib in Resources */,
-				663378361B46142400A6BD57 /* PlayFileViewController.xib in Resources */,
+				663378361B46142400A6BD57 /* GeneratorViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,7 +278,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				663378351B46142400A6BD57 /* PlayFileViewController.m in Sources */,
+				663378351B46142400A6BD57 /* GeneratorViewController.m in Sources */,
 				663378131B4611E400A6BD57 /* main.m in Sources */,
 				663378111B4611E400A6BD57 /* AppDelegate.m in Sources */,
 			);

@@ -23,17 +23,24 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "PlayFileViewController.h"
+#import "GeneratorViewController.h"
 
-double const SAMPLE_RATE = 44100;
+double const SAMPLE_RATE = 44100.0;
 
-@interface PlayFileViewController ()
+typedef NS_ENUM(NSUInteger, GeneratorType)
+{
+    GeneratorTypeSine,
+    GeneratorTypeNoise,
+};
+
+@interface GeneratorViewController ()
+@property (assign) GeneratorType type;
 @property (nonatomic) double frequency;
 @property (nonatomic) double sampleRate;
 @property (nonatomic) double theta;
 @end
 
-@implementation PlayFileViewController
+@implementation GeneratorViewController
 
 //------------------------------------------------------------------------------
 #pragma mark - Customize the Audio Plot
@@ -44,16 +51,10 @@ double const SAMPLE_RATE = 44100;
     //
     // Customizing the audio plot's look
     //
-    // Background color
-    self.audioPlot.backgroundColor = [NSColor colorWithCalibratedRed: 0.816 green: 0.349 blue: 0.255 alpha: 1];
-    // Waveform color
-    self.audioPlot.color           = [NSColor colorWithCalibratedRed: 1.000 green: 1.000 blue: 1.000 alpha: 1];
-    // Plot type
-    self.audioPlot.plotType        = EZPlotTypeBuffer;
-    // Fill
-    self.audioPlot.shouldFill      = YES;
-    // Mirror
-    self.audioPlot.shouldMirror    = YES;
+    self.audioPlot.backgroundColor = [NSColor colorWithCalibratedRed: 0.975 green: 0.533 blue: 0.536 alpha: 1];[NSColor colorWithCalibratedRed: 0.984 green: 0.275 blue: 0.408 alpha: 1];
+    self.audioPlot.color = [NSColor colorWithCalibratedRed: 0.984 green: 0.275 blue: 0.408 alpha: 1];
+    self.audioPlot.plotType = EZPlotTypeBuffer;
+    self.audioPlot.shouldFill = YES;
     
     //
     // Create EZOutput to play audio data
@@ -77,6 +78,7 @@ double const SAMPLE_RATE = 44100;
     self.volumeLabel.floatValue = [self.output volume];
     self.rollingHistoryLengthSlider.intValue = [self.audioPlot rollingHistoryLength];
     self.rollingHistoryLengthLabel.intValue = [self.audioPlot rollingHistoryLength];
+    self.generatorTypeSegmentedControl.selectedSegment = self.type;
 }
 
 //------------------------------------------------------------------------------
@@ -87,6 +89,12 @@ double const SAMPLE_RATE = 44100;
 {
     float value = [(NSSlider *)sender floatValue];
     self.frequency = value;
+}
+
+- (void)changeGeneratorType:(id)sender
+{
+    NSSegmentedControl *segmentControl = (NSSegmentedControl *)sender;
+    self.type = [segmentControl selectedSegment];
 }
 
 - (void)changedOutput:(NSMenuItem *)item
@@ -137,10 +145,6 @@ double const SAMPLE_RATE = 44100;
 {
     if (![self.output isPlaying])
     {
-        if (self.audioPlot.plotType == EZPlotTypeBuffer && self.audioPlot.shouldFill == YES)
-        {
-            self.audioPlot.plotType = EZPlotTypeRolling;
-        }
         [self.output startPlayback];
     }
     else
@@ -214,21 +218,32 @@ double const SAMPLE_RATE = 44100;
         withNumberOfFrames:(UInt32)frames
                  timestamp:(const AudioTimeStamp *)timestamp
 {
-    double theta = self.theta;
-    double frequency = self.frequency;
-    double theta_increment = 2.0 * M_PI * frequency / SAMPLE_RATE;
-    const int channel = 0;
-    Float32 *buffer = (Float32 *)audioBufferList->mBuffers[channel].mData;
-    for (UInt32 frame = 0; frame < frames; frame++)
+    if (self.type == GeneratorTypeSine)
     {
-        buffer[frame] = sin(theta);
-        theta += theta_increment;
-        if (theta > 2.0 * M_PI)
+        double theta = self.theta;
+        double frequency = self.frequency;
+        double theta_increment = 2.0 * M_PI * frequency / SAMPLE_RATE;
+        const int channel = 0;
+        Float32 *buffer = (Float32 *)audioBufferList->mBuffers[channel].mData;
+        for (UInt32 frame = 0; frame < frames; frame++)
         {
-            theta -= 2.0 * M_PI;
+            buffer[frame] = sin(theta);
+            theta += theta_increment;
+            if (theta > 2.0 * M_PI)
+            {
+                theta -= 2.0 * M_PI;
+            }
+        }
+        self.theta = theta;
+    }
+    else if (self.type == GeneratorTypeNoise)
+    {
+        Float32 *buffer = (Float32 *)audioBufferList->mBuffers[0].mData;
+        for (UInt32 frame = 0; frame < frames; frame++)
+        {
+            buffer[frame] = ((float)rand()/RAND_MAX) * 2.0f - 1.0f;
         }
     }
-    self.theta = theta;
     return noErr;
 }
 

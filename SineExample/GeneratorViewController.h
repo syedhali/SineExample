@@ -31,9 +31,9 @@
 /**
  Using the EZOutputDataSource to provide output data to the EZOutput component. 
  */
-@interface PlayFileViewController : NSViewController <NSOpenSavePanelDelegate,
-                                                      EZOutputDataSource,
-                                                      EZOutputDelegate>
+@interface GeneratorViewController : NSViewController <NSOpenSavePanelDelegate,
+                                                       EZOutputDataSource,
+                                                       EZOutputDelegate>
 
 #pragma mark - Components
 /**
@@ -53,6 +53,7 @@
 
 
 @property (nonatomic, weak) IBOutlet NSSlider *frequencySlider;
+@property (nonatomic, weak) IBOutlet NSSegmentedControl *generatorTypeSegmentedControl;
 
 /**
  A label to display the audio file's current position.
@@ -90,10 +91,9 @@
 @property (nonatomic, weak) IBOutlet NSPopUpButton *outputDevicePopUpButton;
 
 #pragma mark - Actions
-/**
- Changes the length of the rolling history of the audio plot.
- */
+
 - (IBAction)changeFrequency:(id)sender;
+- (IBAction)changeGeneratorType:(id)sender;
 
 /**
  Switches the plot drawing type between a buffer plot (visualizes the current stream of audio data from the update function) or a rolling plot (visualizes the audio data over time, this is the classic waveform look)

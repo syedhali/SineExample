@@ -17,7 +17,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    self.controller = [[PlayFileViewController alloc] init];
+    self.controller = [[GeneratorViewController alloc] init];
     self.controller.view.frame = [self.window.contentView frame];
     self.controller.view.autoresizingMask = (NSViewWidthSizable|NSViewHeightSizable);
     [self.window.contentView addSubview:self.controller.view];

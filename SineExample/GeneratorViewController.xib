@@ -5,10 +5,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="PlayFileViewController">
+        <customObject id="-2" userLabel="File's Owner" customClass="GeneratorViewController">
             <connections>
                 <outlet property="audioPlot" destination="Lz1-Gs-1lD" id="V5w-yH-ZVR"/>
                 <outlet property="frequencySlider" destination="CFP-v0-TzQ" id="6wh-fu-xrl"/>
+                <outlet property="generatorTypeSegmentedControl" destination="iOX-t3-Eyz" id="10v-nL-AJ9"/>
                 <outlet property="outputDevicePopUpButton" destination="0LV-Bi-dGz" id="QTQ-qq-Ro8"/>
                 <outlet property="positionLabel" destination="KYm-Io-VNv" id="Fhs-Ya-szS"/>
                 <outlet property="positionSlider" destination="CFP-v0-TzQ" id="EGD-qT-48R"/>
@@ -25,6 +26,9 @@
             <rect key="frame" x="0.0" y="-1" width="480" height="366"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="Lz1-Gs-1lD" customClass="EZAudioPlotGL">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="179"/>
+                </customView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OQp-Lr-dlS">
                     <rect key="frame" x="12" y="320" width="125" height="32"/>
                     <constraints>
@@ -166,9 +170,19 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="Lz1-Gs-1lD" customClass="EZAudioPlotGL">
-                    <rect key="frame" x="0.0" y="0.0" width="480" height="179"/>
-                </customView>
+                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iOX-t3-Eyz">
+                    <rect key="frame" x="329" y="195" width="133" height="24"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="efj-Dw-T7u">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment label="Sine" width="63"/>
+                            <segment label="Noise" width="63" selected="YES" tag="1"/>
+                        </segments>
+                    </segmentedCell>
+                    <connections>
+                        <action selector="changeGeneratorType:" target="-2" id="oWO-5x-T6H"/>
+                    </connections>
+                </segmentedControl>
             </subviews>
             <constraints>
                 <constraint firstItem="3ul-3w-l3S" firstAttribute="leading" secondItem="KYm-Io-VNv" secondAttribute="leading" id="72d-Pf-rLe"/>
@@ -177,6 +191,8 @@
                 <constraint firstAttribute="trailing" secondItem="3ul-3w-l3S" secondAttribute="trailing" constant="20" symbolic="YES" id="Cxg-cL-0Bd"/>
                 <constraint firstItem="KYm-Io-VNv" firstAttribute="leading" secondItem="CFP-v0-TzQ" secondAttribute="trailing" constant="8" symbolic="YES" id="DX7-6L-YDz"/>
                 <constraint firstItem="Fw5-pm-4w0" firstAttribute="leading" secondItem="Aa9-nc-WHJ" secondAttribute="leading" id="E9R-B5-a3c"/>
+                <constraint firstAttribute="trailing" secondItem="iOX-t3-Eyz" secondAttribute="trailing" constant="20" id="EU7-Zn-ALD"/>
+                <constraint firstItem="Lz1-Gs-1lD" firstAttribute="top" secondItem="iOX-t3-Eyz" secondAttribute="bottom" constant="18" id="F37-wh-f1p"/>
                 <constraint firstItem="3ul-3w-l3S" firstAttribute="leading" secondItem="rRH-oS-VV3" secondAttribute="trailing" constant="8" symbolic="YES" id="Hw7-cz-GaJ"/>
                 <constraint firstItem="vKe-ey-hXI" firstAttribute="trailing" secondItem="KYm-Io-VNv" secondAttribute="trailing" id="J1D-un-SXg"/>
                 <constraint firstAttribute="trailing" secondItem="Lz1-Gs-1lD" secondAttribute="trailing" id="ML8-AE-kS3"/>
